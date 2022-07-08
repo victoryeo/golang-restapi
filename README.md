@@ -1,6 +1,13 @@
 ### golang Rest API
 using gin framework
 
+### go commands
+# to run the application
+go run main.go 
+# to test the application
+go test -v
+
+### to call the Rest API using curl
 # get todo
 curl -X GET http://localhost:9090/todos
 
