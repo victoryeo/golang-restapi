@@ -19,9 +19,19 @@ var todos = []todo{
   {ID:"3", Item:"Read room", Completed: false},
 }
 
-func getHello(context *gin.Context) {
-  fmt.Print("getHello")
-  context.IndentedJSON(http.StatusOK, "hello")
+func getRoot(context *gin.Context) {
+  fmt.Print("getRoot")
+	// Call the HTML method of the Context to render a template
+	context.HTML(
+		// Set the HTTP status to 200 (OK)
+		http.StatusOK,
+		// Use the index.html template
+		"index.html",
+		// Pass the data that the page uses (in this case, 'title')
+		gin.H{
+				"title": "Home Page",
+		},
+  )
 }
 
 func getTodos(context *gin.Context) {
@@ -74,8 +84,9 @@ func toggleTodoStatus(context *gin.Context) {
 func main() {
   fmt.Print("Code is a ", " portal.\n")
   router := gin.Default()
+	router.LoadHTMLGlob("templates/*")
 
-  router.GET("/", getHello)
+  router.GET("/", getRoot)
   router.GET("/todos", getTodos)
 	router.GET("/todos/:id", getTodo)
 	router.PATCH("/todos/:id", toggleTodoStatus)
