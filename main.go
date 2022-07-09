@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/victoryeo/golang-restapi/controllers"
 	"github.com/victoryeo/golang-restapi/models"
 )
@@ -84,10 +86,51 @@ func toggleTodoStatus(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, todo)
 }
 
+type UnsignedResponse struct {
+	Message interface{} `json:"message"`
+}
+
+type SignedResponse struct {
+	Token   string `json:"token"`
+	Message string `json:"message"`
+}
+
+type loginst struct {
+	Username string `json:"username,omitempty"`
+}
+
+func login(c *gin.Context) {
+
+	loginParams := loginst{}
+	c.ShouldBindJSON(&loginParams)
+	fmt.Print("Login params ", loginParams, "\n")
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user": loginParams.Username,
+		"nbf":  time.Date(2018, 01, 01, 12, 0, 0, 0, time.UTC).Unix(),
+	})
+
+	tokenStr, err := token.SignedString([]byte("supersecret"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, UnsignedResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, SignedResponse{
+		Token:   tokenStr,
+		Message: "logged in",
+	})
+	return
+}
+
 func main() {
 	fmt.Print("Code is a ", " portal.\n")
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
+
+	router.POST("/login", login)
 
 	models.ConnectDatabase()
 	router.GET("/books", controllers.FindBooks)
