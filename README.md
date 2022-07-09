@@ -19,3 +19,9 @@ curl -X GET http://localhost:9090/todos/3
 
 #### patch todo status
 curl -X PATCH http://localhost:9090/todos/3
+
+#### get books
+curl -X GET http://localhost:9090/books
+
+#### add books
+curl -d '{"title": "Star Worlds","author": "David Blod"}' -X POST http://localhost:9090/books
