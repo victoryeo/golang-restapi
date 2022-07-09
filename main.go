@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/victoryeo/golang-restapi/controllers"
 	"github.com/victoryeo/golang-restapi/models"
 )
 
@@ -89,6 +90,8 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 
 	models.ConnectDatabase()
+	router.GET("/books", controllers.FindBooks)
+	router.POST("/books", controllers.CreateBook)
 
 	router.GET("/", getRoot)
 	router.GET("/todos", getTodos)
