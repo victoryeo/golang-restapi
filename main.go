@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -99,6 +100,14 @@ type loginst struct {
 	Username string `json:"username,omitempty"`
 }
 
+func getSecretKey() string {
+	secret := os.Getenv("SECRET")
+	if secret == "" {
+		secret = "secret"
+	}
+	return secret
+}
+
 func login(c *gin.Context) {
 
 	loginParams := loginst{}
@@ -110,7 +119,7 @@ func login(c *gin.Context) {
 		"nbf":  time.Date(2018, 01, 01, 12, 0, 0, 0, time.UTC).Unix(),
 	})
 
-	tokenStr, err := token.SignedString([]byte("supersecret"))
+	tokenStr, err := token.SignedString([]byte(getSecretKey()))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, UnsignedResponse{
 			Message: err.Error(),
