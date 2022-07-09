@@ -93,6 +93,7 @@ func main() {
 	router.GET("/books", controllers.FindBooks)
 	router.GET("/books/:id", controllers.FindBook)
 	router.POST("/books", controllers.CreateBook)
+	router.PATCH("/books/:id", controllers.UpdateBook)
 
 	router.GET("/", getRoot)
 	router.GET("/todos", getTodos)
