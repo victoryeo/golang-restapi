@@ -1,4 +1,4 @@
-module golang-restapi
+module github.com/victoryeo/golang-restapi
 
 go 1.16
 
