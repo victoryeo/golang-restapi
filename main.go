@@ -91,6 +91,7 @@ func main() {
 
 	models.ConnectDatabase()
 	router.GET("/books", controllers.FindBooks)
+	router.GET("/books/:id", controllers.FindBook)
 	router.POST("/books", controllers.CreateBook)
 
 	router.GET("/", getRoot)
