@@ -23,5 +23,11 @@ curl -X PATCH http://localhost:9090/todos/3
 #### get books
 curl -X GET http://localhost:9090/books
 
+#### get single book
+curl -X GET http://localhost:9090/books/1
+
 #### add books
 curl -d '{"title": "Star Worlds","author": "David Blod"}' -X POST http://localhost:9090/books
+
+#### patch book record
+curl -d '{"title": "The Infinite Game"}' -X PATCH http://localhost:9090/books/1
