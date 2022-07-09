@@ -31,3 +31,6 @@ curl -d '{"title": "Star Worlds","author": "David Blod"}' -X POST http://localho
 
 #### patch book record
 curl -d '{"title": "The Infinite Game"}' -X PATCH http://localhost:9090/books/1
+
+#### delete a book record
+curl -X DELETE http://localhost:9090/books/1
