@@ -4,14 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/victoryeo/golang-restapi/controllers"
+	"github.com/victoryeo/golang-restapi/middleware"
 	"github.com/victoryeo/golang-restapi/models"
 )
+
+type loginst struct {
+	Username string `json:"username,omitempty"`
+}
 
 type todo struct {
 	ID        string `json:"id"`
@@ -87,27 +91,6 @@ func toggleTodoStatus(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, todo)
 }
 
-type UnsignedResponse struct {
-	Message interface{} `json:"message"`
-}
-
-type SignedResponse struct {
-	Token   string `json:"token"`
-	Message string `json:"message"`
-}
-
-type loginst struct {
-	Username string `json:"username,omitempty"`
-}
-
-func getSecretKey() string {
-	secret := os.Getenv("SECRET")
-	if secret == "" {
-		secret = "secret"
-	}
-	return secret
-}
-
 func login(c *gin.Context) {
 
 	loginParams := loginst{}
@@ -119,19 +102,30 @@ func login(c *gin.Context) {
 		"nbf":  time.Date(2018, 01, 01, 12, 0, 0, 0, time.UTC).Unix(),
 	})
 
-	tokenStr, err := token.SignedString([]byte(getSecretKey()))
+	tokenStr, err := token.SignedString([]byte(middleware.GetSecretKey()))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, UnsignedResponse{
+		c.JSON(http.StatusInternalServerError, models.UnsignedResponse{
 			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, SignedResponse{
+	c.JSON(http.StatusOK, models.SignedResponse{
 		Token:   tokenStr,
 		Message: "logged in",
 	})
 	return
+}
+
+func testPrivate(c *gin.Context) {
+	uidStr := c.Param("uid")
+
+	if uidStr != "" {
+		c.JSON(200, gin.H{"uid": uidStr})
+		return
+	}
+
+	c.JSON(200, gin.H{"error": "unknown uid"})
 }
 
 func main() {
@@ -156,5 +150,10 @@ func main() {
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
+
+	privateRouter := router.Group("/private")
+	privateRouter.Use(middleware.JWTTokenCheck)
+	privateRouter.GET("/test/:uid", testPrivate)
+
 	router.Run("localhost:9090")
 }
