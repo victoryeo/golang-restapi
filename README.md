@@ -34,3 +34,9 @@ curl -d '{"title": "The Infinite Game"}' -X PATCH http://localhost:9090/books/1
 
 #### delete a book record
 curl -X DELETE http://localhost:9090/books/1
+
+#### login and get Jwt
+curl -d '{"username": "bod"}' -X POST http://localhost:9090/login
+
+#### use the Jwt to access private Rest API
+curl -H 'Accept: application/json' -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE1MTQ4MDgwMDAsInVzZXIiOiJkZWQifQ.xYsQfBdWNtUlfMSMatGDLstQRgnhz3DU3rwv1sVKXQg" -X GET http://localhost:9090/private/test/
