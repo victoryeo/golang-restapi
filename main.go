@@ -4,18 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/victoryeo/golang-restapi/controllers"
 	"github.com/victoryeo/golang-restapi/middleware"
 	"github.com/victoryeo/golang-restapi/models"
 )
-
-type loginst struct {
-	Username string `json:"username,omitempty"`
-}
 
 type todo struct {
 	ID        string `json:"id"`
@@ -91,34 +85,6 @@ func toggleTodoStatus(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, todo)
 }
 
-func login(c *gin.Context) {
-
-	loginParams := loginst{}
-	c.ShouldBindJSON(&loginParams)
-	fmt.Print("Login params ", loginParams, "\n")
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": loginParams.Username,
-		// let the token be valid for one year
-		"nbf": time.Date(2022, 01, 01, 12, 0, 0, 0, time.UTC).Unix(), //nbf: not before
-		"exp": time.Date(2023, 01, 01, 12, 0, 0, 0, time.UTC).Unix(), //exp: expire
-	})
-
-	tokenStr, err := token.SignedString([]byte(middleware.GetSecretKey()))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.UnsignedResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, models.SignedResponse{
-		Token:   tokenStr,
-		Message: "logged in",
-	})
-	return
-}
-
 func testPrivate(c *gin.Context) {
 	uidStr := c.Param("uid")
 
@@ -135,7 +101,7 @@ func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 
-	router.POST("/login", login)
+	router.POST("/login", middleware.Login)
 
 	models.ConnectDatabase()
 	router.GET("/books", controllers.FindBooks)
