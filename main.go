@@ -99,7 +99,9 @@ func login(c *gin.Context) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user": loginParams.Username,
-		"nbf":  time.Date(2018, 01, 01, 12, 0, 0, 0, time.UTC).Unix(),
+		// let the token be valid for one year
+		"nbf": time.Date(2022, 01, 01, 12, 0, 0, 0, time.UTC).Unix(), //nbf: not before
+		"exp": time.Date(2023, 01, 01, 12, 0, 0, 0, time.UTC).Unix(), //exp: expire
 	})
 
 	tokenStr, err := token.SignedString([]byte(middleware.GetSecretKey()))
