@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -18,33 +17,6 @@ func GetSecretKey() string {
 		secret = "secret"
 	}
 	return secret
-}
-
-func ValidateToken(encodedToken string) (*jwt.Token, error) {
-	return jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
-		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
-			// %q which is used for a single-quoted character
-			return nil, fmt.Errorf("Invalid token %q", token.Header["alg"])
-
-		}
-		return []byte(GetSecretKey()), nil
-	})
-}
-
-func AuthorizeJWT() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		const BEARER_SCHEMA = "Bearer"
-		authHeader := c.GetHeader("Authorization")
-		tokenString := authHeader[len(BEARER_SCHEMA):]
-		token, err := ValidateToken(tokenString)
-		if token.Valid {
-			claims := token.Claims.(jwt.MapClaims)
-			fmt.Println(claims)
-		} else {
-			fmt.Println(err)
-			c.AbortWithStatus(http.StatusUnauthorized)
-		}
-	}
 }
 
 func extractBearerToken(header string) (string, error) {
