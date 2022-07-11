@@ -39,4 +39,4 @@ curl -X DELETE http://localhost:9090/books/1
 curl -d '{"username": "bod"}' -X POST http://localhost:9090/login
 
 #### use the Jwt to access private Rest API
-curl -H 'Accept: application/json' -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE1MTQ4MDgwMDAsInVzZXIiOiJkZWQifQ.xYsQfBdWNtUlfMSMatGDLstQRgnhz3DU3rwv1sVKXQg" -X GET http://localhost:9090/private/test/
+curl -H 'Accept: application/json' -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE1MTQ4MDgwMDAsInVzZXIiOiJkZWQifQ.xYsQfBdWNtUlfMSMatGDLstQRgnhz3DU3rwv1sVKXQg" -X GET http://localhost:9090/private/test/1
