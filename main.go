@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/victoryeo/golang-restapi/controllers"
+	"github.com/victoryeo/golang-restapi/database"
 	"github.com/victoryeo/golang-restapi/middleware"
 	"github.com/victoryeo/golang-restapi/models"
 )
@@ -98,6 +99,11 @@ func testPrivate(c *gin.Context) {
 
 func main() {
 	fmt.Print("Code is a ", " portal.\n")
+
+	// Initialize Database
+	database.Connect("host=localhost user=postgres password=password dbname=user_login port=5432 sslmode=disable TimeZone=Asia/Shanghai")
+	database.Migrate()
+
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 
