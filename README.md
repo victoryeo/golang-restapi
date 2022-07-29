@@ -2,6 +2,8 @@
 using gin framework
 
 ### go commands
+### get dependencies of the program
+go get -d ./...
 #### to run the application
 go run main.go 
 #### to test the application
