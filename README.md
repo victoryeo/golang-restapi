@@ -42,3 +42,12 @@ curl -d '{"username": "bod"}' -X POST http://localhost:9090/login
 
 #### use the Jwt to access private Rest API
 curl -H 'Accept: application/json' -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE1MTQ4MDgwMDAsInVzZXIiOiJkZWQifQ.xYsQfBdWNtUlfMSMatGDLstQRgnhz3DU3rwv1sVKXQg" -X GET http://localhost:9090/private/test/1
+
+#### to register a user
+curl -d '{"name":"bod", "username":"bod", "email": "bod", "password": "xxxx"}' -X POST http://localhost:9090/api/user/register
+
+#### to login and generate jwt token
+curl -d '{"email": "bod", "password": "xxxx"}' -X POST http://localhost:9090/api/token
+
+#### to access secure endpoint
+curl -H 'Accept: application/json' -H "Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE1MTQ4MDgwMDAsInVzZXIiOiJkZWQifQ.xYsQfBdWNtUlfMSMatGDLstQRgnhz3DU3rwv1sVKXQg" -X GET http://localhost:9090/api/secured/ping
