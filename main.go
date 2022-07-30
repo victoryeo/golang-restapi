@@ -129,5 +129,15 @@ func main() {
 	privateRouter.Use(middleware.JWTTokenCheck)
 	privateRouter.GET("/test/:uid", testPrivate)
 
+	api := router.Group("/api")
+	{
+		api.POST("/token", controllers.GenerateToken)
+		api.POST("/user/register", controllers.RegisterUser)
+		secured := api.Group("/secured").Use(middleware.AuthJwt())
+		{
+			secured.GET("/ping", controllers.Ping)
+		}
+	}
+
 	router.Run("localhost:9090")
 }
